@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farewell Chaudhry Rashid</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1a1a40, #0f2027);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .typing {
+      font-size: 1.5em;
+      border-right: 2px solid #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 5s steps(40, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 1em;
+      color: #bbb;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+
+  <div class="container">
+    <h1>Farewell, Chaudhry Rashid</h1>
+    <div class="typing" id="message"></div>
+    <div class="footer">Your brilliance will shine wherever you go 🌟</div>
+  </div>
+
+  <script>
+    // Typing animation
+    const text = "An intelligent, creative, and inspiring software student. We’ll miss you, legend!";
+    let index = 0;
+    const speed = 50;
+    const messageEl = document.getElementById('message');
+
+    function typeWriter() {
+      if (index < text.length) {
+        messageEl.textContent += text.charAt(index);
+        index++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+    typeWriter();
+
+    // Confetti animation
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let confetti = [];
+
+    function randomColor() {
+      const colors = ['#00c6ff', '#0072ff', '#ff4081', '#ffd740', '#7c4dff'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function Confetto() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height - canvas.height;
+      this.r = Math.random() * 6 + 4;
+      this.d = Math.random() * 50 + 10;
+      this.color = randomColor();
+      this.tilt = Math.random() * 10 - 10;
+      this.tiltAngleIncremental = Math.random() * 0.1 + 0.05;
+      this.tiltAngle = 0;
+
+      this.draw = function () {
+        ctx.beginPath();
+        ctx.lineWidth = this.r / 2;
+        ctx.strokeStyle = this.color;
+        ctx.moveTo(this.x + this.tilt + this.r / 4, this.y);
+        ctx.lineTo(this.x + this.tilt, this.y + this.tilt + this.r / 4);
+        ctx.stroke();
+      };
+    }
+
+    function createConfetti() {
+      for (let i = 0; i < 150; i++) {
+        confetti.push(new Confetto());
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach((confetto) => {
+        confetto.tiltAngle += confetto.tiltAngleIncremental;
+        confetto.y += (Math.cos(confetto.d) + 3 + confetto.r / 2) / 2;
+        confetto.x += Math.sin(0.01);
+        confetto.tilt = Math.sin(confetto.tiltAngle) * 15;
+
+        if (confetto.y > canvas.height) {
+          confetto.x = Math.random() * canvas.width;
+          confetto.y = -20;
+        }
+
+        confetto.draw();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    createConfetti();
+    draw();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
